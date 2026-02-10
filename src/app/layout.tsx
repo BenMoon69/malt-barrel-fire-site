@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -18,7 +20,7 @@ const lato = Lato({
 export const metadata: Metadata = {
   title: "Malt Barrel & Fire",
   description:
-    "Wood-fired cuisine, rare whiskeys, and an atmosphere forged in flame. Reserve your table tonight.",
+    "Wood-fired cuisine, rare spirits, and an atmosphere forged in flame. Four locations across Gauteng.",
 };
 
 export default function RootLayout({
@@ -29,7 +31,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${lato.variable} antialiased`}>
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
