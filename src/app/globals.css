@@ -70,6 +70,12 @@ body {
   50% { opacity: 0.3; }
 }
 
+/* Scroll indicator bounce */
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
 /* Menu overlay */
 .menu-overlay {
   position: fixed;
@@ -78,4 +84,11 @@ body {
   background: var(--background);
   overflow-y: auto;
   transform-origin: center center;
+}
+
+/* Horizontal rule accent */
+.hr-accent {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--amber), transparent);
+  opacity: 0.3;
 }
