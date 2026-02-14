@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
@@ -18,29 +18,140 @@ const partnerLogos = [
   { name: "Partner 5", src: "/images/partners/partner-5.png" },
 ];
 
+function useMouseParallax(ref: React.RefObject<HTMLDivElement | null>, intensity: number = 0.02) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onMove = (e: MouseEvent) => {
+      const xOffset = (e.clientX / window.innerWidth - 0.5) * intensity * 100;
+      const yOffset = (e.clientY / window.innerHeight - 0.5) * intensity * 100;
+      gsap.to(el, {
+        x: -xOffset,
+        y: -yOffset,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [ref, intensity]);
+}
+
+// Card tilt effect
+function useCardTilt(cardRef: React.RefObject<HTMLElement | null>) {
+  const onMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+    gsap.to(card, {
+      rotateY: x * 8,
+      rotateX: -y * 8,
+      duration: 0.4,
+      ease: "power2.out",
+    });
+
+    // Move glow element
+    const glow = card.querySelector("[data-glow]") as HTMLElement;
+    if (glow) {
+      gsap.to(glow, {
+        x: x * 80,
+        y: y * 80,
+        opacity: 0.15,
+        duration: 0.4,
+      });
+    }
+  }, [cardRef]);
+
+  const onLeave = useCallback(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.5, ease: "power2.out" });
+    const glow = card.querySelector("[data-glow]") as HTMLElement;
+    if (glow) {
+      gsap.to(glow, { opacity: 0, duration: 0.4 });
+    }
+  }, [cardRef]);
+
+  return { onMove, onLeave };
+}
+
+function LocationCard({ loc, index }: { loc: typeof locations[0]; index: number }) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+  const { onMove, onLeave } = useCardTilt(cardRef as React.RefObject<HTMLElement | null>);
+
+  return (
+    <Link
+      ref={cardRef}
+      href={`/${loc.slug}`}
+      data-animate
+      data-delay={index * 0.08}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="card-3d group relative overflow-hidden rounded-sm border border-charcoal-light p-8 transition-all duration-500 hover:border-amber/40 hover:bg-charcoal/50"
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      {/* Ambient glow */}
+      <div
+        data-glow
+        className="pointer-events-none absolute inset-0 opacity-0"
+        style={{
+          background: "radial-gradient(circle 120px, rgba(212,145,26,0.2), transparent)",
+        }}
+      />
+      <div className="absolute top-0 left-0 h-1 w-0 bg-amber transition-all duration-700 group-hover:w-full" />
+      <h3 className="font-serif text-2xl text-cream transition-colors duration-300 group-hover:text-amber">
+        {loc.name}
+      </h3>
+      <p className="mt-3 text-sm text-warm-gray/80">{loc.tagline}</p>
+      <p className="mt-2 text-sm text-warm-gray">{loc.address}</p>
+      <p className="mt-1 text-xs text-warm-gray/60">{loc.hours}</p>
+      <div className="mt-6 flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-amber opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+        View Details
+        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+    </Link>
+  );
+}
+
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const heroTextRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLDivElement>(null);
 
-  // Hero entrance animation
+  useMouseParallax(heroTextRef, 0.015);
+
+  // Hero entrance animation — text reveal with clip-path
   useEffect(() => {
     const hero = heroRef.current;
     if (!hero) return;
 
     const els = hero.querySelectorAll("[data-hero-animate]");
-    gsap.set(els, { y: 50, opacity: 0 });
 
-    const tl = gsap.timeline({ delay: 0.5 });
+    gsap.set(els, {
+      y: 60,
+      opacity: 0,
+      filter: "blur(8px)",
+    });
+
+    const tl = gsap.timeline({ delay: 0.3 });
     tl.to(els, {
       y: 0,
       opacity: 1,
-      duration: 1.2,
+      filter: "blur(0px)",
+      duration: 1.4,
       ease: "power3.out",
-      stagger: 0.18,
+      stagger: 0.15,
     });
   }, []);
 
-  // Scroll-triggered animations for all sections
+  // Scroll-triggered animations — varied entrances
   useEffect(() => {
     const container = sectionsRef.current;
     if (!container) return;
@@ -50,26 +161,64 @@ export default function Home() {
 
     sections.forEach((section) => {
       const items = section.querySelectorAll("[data-animate]");
-      gsap.set(items, { y: 50, opacity: 0 });
+
+      items.forEach((item) => {
+        const direction = (item as HTMLElement).dataset.from || "bottom";
+        const delay = parseFloat((item as HTMLElement).dataset.delay || "0");
+        const initial: gsap.TweenVars = { opacity: 0 };
+
+        switch (direction) {
+          case "left":
+            initial.x = -60;
+            break;
+          case "right":
+            initial.x = 60;
+            break;
+          case "scale":
+            initial.scale = 0.85;
+            break;
+          default:
+            initial.y = 50;
+        }
+
+        gsap.set(item, initial);
+      });
 
       const st = ScrollTrigger.create({
         trigger: section,
         start: "top 82%",
         once: true,
         onEnter: () => {
-          gsap.to(items, {
-            y: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: "power2.out",
-            stagger: 0.12,
+          items.forEach((item, i) => {
+            const direction = (item as HTMLElement).dataset.from || "bottom";
+            const delay = parseFloat((item as HTMLElement).dataset.delay || "0");
+            const target: gsap.TweenVars = {
+              opacity: 1,
+              duration: 0.9,
+              ease: "power2.out",
+              delay: i * 0.12 + delay,
+            };
+
+            switch (direction) {
+              case "left":
+              case "right":
+                target.x = 0;
+                break;
+              case "scale":
+                target.scale = 1;
+                break;
+              default:
+                target.y = 0;
+            }
+
+            gsap.to(item, target);
           });
         },
       });
       triggers.push(st);
     });
 
-    // Parallax on image dividers
+    // Parallax + zoom on image dividers
     const dividers = container.querySelectorAll("[data-parallax]");
     dividers.forEach((div) => {
       const img = div.querySelector("img");
@@ -79,11 +228,28 @@ export default function Home() {
         start: "top bottom",
         end: "bottom top",
         onUpdate: (self) => {
-          gsap.set(img, { y: self.progress * 60 - 30 });
+          gsap.set(img, {
+            y: self.progress * 60 - 30,
+            scale: 1 + self.progress * 0.1,
+          });
         },
       });
       triggers.push(st);
     });
+
+    // CTA parallax
+    const ctaBg = container.querySelector("[data-cta-bg]");
+    if (ctaBg) {
+      const st = ScrollTrigger.create({
+        trigger: ctaBg.parentElement,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          gsap.set(ctaBg, { y: self.progress * 40 - 20 });
+        },
+      });
+      triggers.push(st);
+    }
 
     return () => triggers.forEach((st) => st.kill());
   }, []);
@@ -99,11 +265,13 @@ export default function Home() {
           src="/images/hero-interior.jpg"
           alt="Malt Barrel & Fire interior"
           fill
-          className="object-cover object-center scale-105"
+          className="object-cover object-center ken-burns"
           priority
           quality={90}
         />
         <div className="absolute inset-0 bg-black/60" />
+        {/* Vignette */}
+        <div className="absolute inset-0 vignette" />
         <div
           className="absolute inset-0"
           style={{
@@ -121,7 +289,7 @@ export default function Home() {
 
         <EmberParticles />
 
-        <div className="relative z-10 px-6 text-center max-w-5xl mx-auto">
+        <div ref={heroTextRef} className="relative z-10 px-6 text-center max-w-5xl mx-auto">
           <p
             data-hero-animate
             className="mb-6 text-sm tracking-[0.5em] uppercase text-amber/80 md:text-base"
@@ -158,7 +326,7 @@ export default function Home() {
           >
             <Link
               href="/menu"
-              className="group inline-flex items-center gap-3 rounded-sm border border-amber px-10 py-4 text-sm tracking-[0.25em] uppercase text-amber transition-all duration-300 hover:bg-amber hover:text-background hover:shadow-[0_0_40px_rgba(212,145,26,0.25)]"
+              className="button-pulse group inline-flex items-center gap-3 rounded-sm border border-amber px-10 py-4 text-sm tracking-[0.25em] uppercase text-amber transition-all duration-300 hover:bg-amber hover:text-background hover:shadow-[0_0_40px_rgba(212,145,26,0.25)]"
             >
               Explore Menu
               <svg
@@ -257,28 +425,9 @@ export default function Home() {
             />
           </div>
 
-          <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {locations.map((loc) => (
-              <Link
-                key={loc.slug}
-                href={`/${loc.slug}`}
-                data-animate
-                className="group relative overflow-hidden rounded-sm border border-charcoal-light p-8 transition-all duration-500 hover:border-amber/40 hover:bg-charcoal/50"
-              >
-                <div className="absolute top-0 left-0 h-1 w-0 bg-amber transition-all duration-700 group-hover:w-full" />
-                <h3 className="font-serif text-2xl text-cream transition-colors duration-300 group-hover:text-amber">
-                  {loc.name}
-                </h3>
-                <p className="mt-3 text-sm text-warm-gray/80">{loc.tagline}</p>
-                <p className="mt-2 text-sm text-warm-gray">{loc.address}</p>
-                <p className="mt-1 text-xs text-warm-gray/60">{loc.hours}</p>
-                <div className="mt-6 flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-amber opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
-                  View Details
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
+          <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" style={{ perspective: "800px" }}>
+            {locations.map((loc, i) => (
+              <LocationCard key={loc.slug} loc={loc} index={i} />
             ))}
           </div>
         </div>
@@ -290,21 +439,22 @@ export default function Home() {
         <div className="relative mx-auto max-w-6xl">
           <div className="grid items-center gap-16 lg:grid-cols-2">
             <div>
-              <p data-animate className="mb-5 text-sm tracking-[0.4em] uppercase text-amber">
+              <p data-animate data-from="left" className="mb-5 text-sm tracking-[0.4em] uppercase text-amber">
                 From the Kitchen
               </p>
               <h2
                 data-animate
+                data-from="left"
                 className="font-serif text-4xl font-bold text-cream md:text-5xl lg:text-6xl"
               >
                 Fired to Perfection
               </h2>
-              <div data-animate className="mt-5 h-px w-20 bg-gradient-to-r from-amber/40 to-transparent" />
-              <p data-animate className="mt-8 text-lg leading-relaxed text-warm-gray md:text-xl">
+              <div data-animate data-from="left" className="mt-5 h-px w-20 bg-gradient-to-r from-amber/40 to-transparent" />
+              <p data-animate data-from="left" className="mt-8 text-lg leading-relaxed text-warm-gray md:text-xl">
                 Every dish tells a story of smoke and flame. Our chefs source the finest
                 cuts, freshest seafood, and seasonal produce — then let the fire do the talking.
               </p>
-              <div data-animate className="mt-10 flex flex-wrap gap-4">
+              <div data-animate data-from="left" className="mt-10 flex flex-wrap gap-4">
                 <Link
                   href="/menu"
                   className="group inline-flex items-center gap-2 text-sm tracking-[0.2em] uppercase text-amber transition-colors hover:text-amber-light"
@@ -317,7 +467,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div data-animate className="grid grid-cols-2 gap-5">
+            <div data-animate data-from="right" className="grid grid-cols-2 gap-5">
               <div className="relative aspect-[3/4] overflow-hidden rounded-sm">
                 <Image
                   src="/images/food/fire-dish.jpg"
@@ -352,6 +502,7 @@ export default function Home() {
           </p>
           <div
             data-animate
+            data-from="scale"
             className="flex flex-wrap items-center justify-center gap-14 opacity-40"
           >
             {partnerLogos.map((partner) => (
@@ -369,6 +520,7 @@ export default function Home() {
       {/* ──────────── CTA STRIP ──────────── */}
       <section data-section className="relative overflow-hidden py-36 px-6 md:px-12">
         <Image
+          data-cta-bg
           src="/images/bar-interior.jpg"
           alt="Bar ambience"
           fill
@@ -380,7 +532,7 @@ export default function Home() {
         <div className="relative text-center">
           <h2
             data-animate
-            className="font-serif text-4xl font-bold text-cream md:text-6xl lg:text-7xl"
+            className="text-shimmer font-serif text-4xl font-bold md:text-6xl lg:text-7xl"
           >
             Your table awaits
           </h2>
@@ -396,7 +548,7 @@ export default function Home() {
           >
             <Link
               href="/book"
-              className="rounded-sm border border-amber bg-amber px-12 py-4 text-sm tracking-[0.25em] uppercase text-background transition-all duration-300 hover:bg-amber-light hover:shadow-[0_0_40px_rgba(212,145,26,0.2)]"
+              className="button-pulse rounded-sm border border-amber bg-amber px-12 py-4 text-sm tracking-[0.25em] uppercase text-background transition-all duration-300 hover:bg-amber-light hover:shadow-[0_0_40px_rgba(212,145,26,0.2)]"
             >
               Book a Table
             </Link>

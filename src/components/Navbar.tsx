@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import gsap from "gsap";
 import { locations } from "@/content/locations";
 
 const navLinks = [
@@ -18,9 +19,15 @@ export default function Navbar() {
   const [locationsOpen, setLocationsOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileLinksRef = useRef<HTMLDivElement>(null);
+  const scrollProgress = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 50);
+      scrollProgress.current = Math.min(y / 300, 1);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -29,6 +36,24 @@ export default function Navbar() {
     setMobileOpen(false);
     setLocationsOpen(false);
   }, [pathname]);
+
+  // Staggered mobile menu entrance
+  useEffect(() => {
+    if (!mobileLinksRef.current) return;
+    const links = mobileLinksRef.current.querySelectorAll("[data-mobile-link]");
+
+    if (mobileOpen) {
+      gsap.set(links, { y: 30, opacity: 0 });
+      gsap.to(links, {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: "power3.out",
+        stagger: 0.06,
+        delay: 0.15,
+      });
+    }
+  }, [mobileOpen]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -49,10 +74,19 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled || mobileOpen
-          ? "bg-background/95 shadow-lg shadow-black/20 backdrop-blur-md"
-          : "bg-transparent"
+          ? "bg-background/95 shadow-lg shadow-black/20 backdrop-blur-lg"
+          : "bg-transparent backdrop-blur-none"
       }`}
     >
+      {/* Scroll progress line */}
+      <div
+        className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-amber/60 via-amber to-amber/60 transition-opacity duration-300"
+        style={{
+          width: `${scrollProgress.current * 100}%`,
+          opacity: scrolled ? 0.5 : 0,
+        }}
+      />
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-12">
         {/* Logo */}
         <Link href="/" className="relative z-50 flex items-center">
@@ -160,15 +194,16 @@ export default function Navbar() {
             : "pointer-events-none opacity-0"
         }`}
       >
-        <div className="flex flex-col items-center gap-6">
+        <div ref={mobileLinksRef} className="flex flex-col items-center gap-6">
           {/* Locations header */}
-          <p className="text-xs tracking-[0.3em] uppercase text-amber/60">
+          <p data-mobile-link className="text-xs tracking-[0.3em] uppercase text-amber/60">
             Our Locations
           </p>
           {locations.map((loc) => (
             <Link
               key={loc.slug}
               href={`/${loc.slug}`}
+              data-mobile-link
               className={`font-serif text-2xl transition-colors ${
                 pathname === `/${loc.slug}` ? "text-amber" : "text-cream/80 hover:text-cream"
               }`}
@@ -177,12 +212,13 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <div className="my-2 h-px w-16 bg-charcoal-light" />
+          <div data-mobile-link className="my-2 h-px w-16 bg-charcoal-light" />
 
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              data-mobile-link
               className={`font-serif text-2xl transition-colors ${
                 pathname === link.href ? "text-amber" : "text-cream"
               }`}
@@ -192,6 +228,7 @@ export default function Navbar() {
           ))}
           <Link
             href="/book"
+            data-mobile-link
             className="mt-4 rounded-sm border border-amber px-10 py-4 text-sm tracking-[0.25em] uppercase text-amber transition-all hover:bg-amber hover:text-background"
           >
             Book a Table

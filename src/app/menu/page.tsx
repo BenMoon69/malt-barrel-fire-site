@@ -39,8 +39,11 @@ const menuCategories = [
 
 export default function MenuPage() {
   const [activeTab, setActiveTab] = useState(0);
+  const [prevTab, setPrevTab] = useState(0);
   const itemsRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -56,34 +59,58 @@ export default function MenuPage() {
     });
   }, []);
 
-  const animateItems = () => {
-    if (!itemsRef.current) return;
-    const items = itemsRef.current.querySelectorAll("[data-menu-item]");
-    gsap.set(items, { y: 20, opacity: 0 });
-    gsap.to(items, {
-      y: 0,
-      opacity: 1,
+  // Sliding tab indicator
+  useEffect(() => {
+    if (!tabsRef.current || !indicatorRef.current) return;
+    const buttons = tabsRef.current.querySelectorAll("[data-tab]");
+    const activeButton = buttons[activeTab] as HTMLElement;
+    if (!activeButton) return;
+
+    const tabsRect = tabsRef.current.getBoundingClientRect();
+    const btnRect = activeButton.getBoundingClientRect();
+
+    gsap.to(indicatorRef.current, {
+      x: btnRect.left - tabsRect.left,
+      width: btnRect.width,
       duration: 0.4,
       ease: "power2.out",
-      stagger: 0.06,
+    });
+  }, [activeTab]);
+
+  const animateItems = (direction: number) => {
+    if (!itemsRef.current) return;
+    const items = itemsRef.current.querySelectorAll("[data-menu-item]");
+    const fromX = direction * 40;
+    gsap.set(items, { x: fromX, opacity: 0 });
+    gsap.to(items, {
+      x: 0,
+      opacity: 1,
+      duration: 0.45,
+      ease: "power2.out",
+      stagger: 0.05,
     });
   };
 
   useEffect(() => {
-    const timer = setTimeout(animateItems, 50);
+    const direction = activeTab > prevTab ? 1 : -1;
+    const timer = setTimeout(() => animateItems(direction), 50);
     return () => clearTimeout(timer);
-  }, [activeTab]);
+  }, [activeTab, prevTab]);
 
   const switchTab = (index: number) => {
     if (index === activeTab || !itemsRef.current) return;
+    const direction = index > activeTab ? -1 : 1;
     const items = itemsRef.current.querySelectorAll("[data-menu-item]");
     gsap.to(items, {
-      y: -10,
+      x: direction * 40,
       opacity: 0,
       duration: 0.2,
       ease: "power2.in",
       stagger: 0.02,
-      onComplete: () => setActiveTab(index),
+      onComplete: () => {
+        setPrevTab(activeTab);
+        setActiveTab(index);
+      },
     });
   };
 
@@ -122,10 +149,17 @@ export default function MenuPage() {
 
       {/* Category tabs */}
       <div className="mx-auto max-w-4xl px-6 pt-12 md:px-12">
-        <div className="flex flex-wrap justify-center gap-3">
+        <div ref={tabsRef} className="relative flex flex-wrap justify-center gap-3">
+          {/* Sliding indicator */}
+          <div
+            ref={indicatorRef}
+            className="absolute bottom-0 left-0 h-0.5 bg-amber rounded-full"
+            style={{ width: 0 }}
+          />
           {menuCategories.map((cat, i) => (
             <button
               key={cat.name}
+              data-tab
               onClick={() => switchTab(i)}
               className={`rounded-sm px-8 py-3 text-xs tracking-[0.2em] uppercase transition-all cursor-pointer ${
                 activeTab === i
@@ -149,7 +183,7 @@ export default function MenuPage() {
             <div
               key={item.name}
               data-menu-item
-              className="group flex items-baseline justify-between gap-6 border-b border-charcoal-light/60 py-7 transition-colors hover:border-amber/20"
+              className="group flex items-baseline justify-between gap-6 border-b border-charcoal-light/60 py-7 transition-all duration-300 hover:border-amber/20 hover:bg-charcoal/20 hover:px-4 rounded-sm"
             >
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-cream transition-colors group-hover:text-amber-light">
@@ -159,7 +193,7 @@ export default function MenuPage() {
                   {item.desc}
                 </p>
               </div>
-              <span className="shrink-0 font-serif text-xl text-amber">
+              <span className="shrink-0 font-serif text-xl text-amber transition-all duration-300 group-hover:text-amber-light group-hover:drop-shadow-[0_0_8px_rgba(232,168,50,0.4)]">
                 {item.price}
               </span>
             </div>

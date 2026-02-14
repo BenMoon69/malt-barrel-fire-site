@@ -1,6 +1,13 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { locations } from "@/content/locations";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const socials = [
   {
@@ -51,12 +58,39 @@ const socials = [
 ];
 
 export default function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return;
+
+    const items = footer.querySelectorAll("[data-footer-animate]");
+    gsap.set(items, { y: 30, opacity: 0 });
+
+    const st = ScrollTrigger.create({
+      trigger: footer,
+      start: "top 90%",
+      once: true,
+      onEnter: () => {
+        gsap.to(items, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.08,
+        });
+      },
+    });
+
+    return () => st.kill();
+  }, []);
+
   return (
-    <footer className="border-t border-charcoal-light bg-background">
+    <footer ref={footerRef} className="border-t border-charcoal-light bg-background">
       <div className="mx-auto max-w-7xl px-6 py-16 md:px-12">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
-          <div>
+          <div data-footer-animate>
             <Image
               src="/images/logo.png"
               alt="Malt Barrel & Fire"
@@ -74,7 +108,7 @@ export default function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-warm-gray/60 transition-colors hover:text-amber"
+                  className="text-warm-gray/60 transition-all duration-300 hover:text-amber hover:scale-110 hover:drop-shadow-[0_0_8px_rgba(212,145,26,0.4)]"
                   aria-label={social.name}
                 >
                   {social.icon}
@@ -84,7 +118,7 @@ export default function Footer() {
           </div>
 
           {/* Locations */}
-          <div>
+          <div data-footer-animate>
             <h4 className="mb-5 text-xs tracking-[0.2em] uppercase text-amber">
               Our Locations
             </h4>
@@ -102,7 +136,7 @@ export default function Footer() {
           </div>
 
           {/* Navigate */}
-          <div>
+          <div data-footer-animate>
             <h4 className="mb-5 text-xs tracking-[0.2em] uppercase text-amber">
               Navigate
             </h4>
@@ -135,7 +169,7 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div>
+          <div data-footer-animate>
             <h4 className="mb-5 text-xs tracking-[0.2em] uppercase text-amber">
               Get in Touch
             </h4>
@@ -160,7 +194,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 border-t border-charcoal-light pt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+        <div data-footer-animate className="mt-14 border-t border-charcoal-light pt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <p className="text-xs text-warm-gray/60">
             &copy; {new Date().getFullYear()} Collaros &amp; Moore Consulting (PTY) LTD
           </p>

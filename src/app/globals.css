@@ -38,6 +38,16 @@ body {
   font-family: var(--font-lato), sans-serif;
 }
 
+/* Hide default cursor on desktop when custom cursor active */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  a, button, [role="button"] {
+    cursor: none;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -76,6 +86,65 @@ body {
   50% { transform: translateY(8px); opacity: 1; }
 }
 
+/* Text shimmer effect */
+@keyframes textShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--cream) 0%,
+    var(--amber-light) 25%,
+    var(--cream) 50%,
+    var(--amber-light) 75%,
+    var(--cream) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmer 4s linear infinite;
+}
+
+/* Ken Burns effect */
+@keyframes kenBurns {
+  0% { transform: scale(1.05) translate(0, 0); }
+  50% { transform: scale(1.12) translate(-1%, -0.5%); }
+  100% { transform: scale(1.05) translate(0, 0); }
+}
+
+.ken-burns {
+  animation: kenBurns 20s ease-in-out infinite;
+}
+
+/* Vignette overlay */
+.vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(10, 8, 6, 0.4) 70%,
+    rgba(10, 8, 6, 0.8) 100%
+  );
+}
+
+/* Line draw animation */
+@keyframes drawLine {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Button pulse on appear */
+@keyframes buttonPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 145, 26, 0); }
+  50% { box-shadow: 0 0 30px 5px rgba(212, 145, 26, 0.15); }
+}
+
+.button-pulse {
+  animation: buttonPulse 2s ease-in-out 1;
+}
+
 /* Menu overlay */
 .menu-overlay {
   position: fixed;
@@ -91,4 +160,10 @@ body {
   height: 1px;
   background: linear-gradient(to right, transparent, var(--amber), transparent);
   opacity: 0.3;
+}
+
+/* Card tilt perspective */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 800px;
 }
