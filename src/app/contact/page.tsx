@@ -5,16 +5,9 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { locations } from "@/content/locations";
+import { socials } from "@/content/socials";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const socials = [
-  { name: "Instagram", href: "#" },
-  { name: "Facebook", href: "#" },
-  { name: "X (Twitter)", href: "#" },
-  { name: "LinkedIn", href: "#" },
-  { name: "YouTube", href: "#" },
-];
 
 export default function ContactPage() {
   const headerRef = useRef<HTMLDivElement>(null);

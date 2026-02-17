@@ -15,7 +15,7 @@ export interface Location {
     saturday: string;
     sunday: string;
   };
-  mapQuery: string;
+  mapUrl: string;
   instagram: string;
   instagramHandle: string;
   heroImage: string;
@@ -45,8 +45,8 @@ export const locations: Location[] = [
       saturday: "TBC",
       sunday: "TBC",
     },
-    mapQuery: "Malt+Barrel+and+Fire+Midrand",
-    instagram: "https://instagram.com/malt_midrand",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Malt+Barrel+%26+Fire+Midrand",
+    instagram: "https://www.instagram.com/malt_midrand",
     instagramHandle: "@malt_midrand",
     heroImage: "/images/locations/midrand-hero.jpg",
     menus: {
@@ -73,8 +73,8 @@ export const locations: Location[] = [
       saturday: "TBC",
       sunday: "TBC",
     },
-    mapQuery: "Malt+Barrel+and+Fire+Silver+Lakes",
-    instagram: "https://instagram.com/malt_silverlakes",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Malt+Barrel+%26+Fire+Silver+Lakes+Pretoria",
+    instagram: "https://www.instagram.com/malt_silverlakes",
     instagramHandle: "@malt_silverlakes",
     heroImage: "/images/locations/silver-lakes-hero.jpg",
     menus: {
@@ -101,8 +101,8 @@ export const locations: Location[] = [
       saturday: "TBC",
       sunday: "TBC",
     },
-    mapQuery: "Malt+Barrel+and+Fire+Queenswood",
-    instagram: "https://instagram.com/malt_queenswood",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Malt+Barrel+%26+Fire+Queenswood+Pretoria",
+    instagram: "https://www.instagram.com/malt_queenswood",
     instagramHandle: "@malt_queenswood",
     heroImage: "/images/locations/queenswood-hero.jpg",
     menus: {
@@ -129,8 +129,8 @@ export const locations: Location[] = [
       saturday: "TBC",
       sunday: "TBC",
     },
-    mapQuery: "Malt+Barrel+and+Fire+Montecasino",
-    instagram: "https://instagram.com/malt_montecasino",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Malt+Barrel+%26+Fire+Montecasino+Fourways",
+    instagram: "https://www.instagram.com/malt_montecasino",
     instagramHandle: "@malt_montecasino",
     heroImage: "/images/locations/monte-casino-hero.jpg",
     menus: {

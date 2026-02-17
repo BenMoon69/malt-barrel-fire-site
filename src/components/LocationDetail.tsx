@@ -325,7 +325,7 @@ export default function LocationDetail({ location }: LocationDetailProps) {
                 Google Maps embed — {location.address}
               </p>
               <a
-                href={`https://www.google.com/maps/search/${location.mapQuery}`}
+                href={location.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-block text-xs tracking-[0.15em] uppercase text-amber transition-colors hover:text-amber-light"
