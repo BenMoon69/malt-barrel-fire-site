@@ -113,13 +113,19 @@ export default function Footer() {
             </h4>
             <div className="space-y-3 text-sm text-warm-gray">
               <a
-                href="mailto:info@maltbarrelandfire.com"
+                href="mailto:info@maltmidrand.co.za"
                 className="block transition-colors hover:text-cream"
               >
-                info@maltbarrelandfire.com
+                info@maltmidrand.co.za
+              </a>
+              <a
+                href="tel:0115947947"
+                className="block transition-colors hover:text-cream"
+              >
+                011 594 7947
               </a>
               <p className="text-warm-gray/60">
-                General enquiries &amp; partnerships
+                General enquiries &amp; bookings
               </p>
             </div>
             <Link
