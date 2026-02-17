@@ -5,8 +5,6 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { locations } from "@/content/locations";
-import { socials } from "@/content/socials";
-
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ContactPage() {
@@ -109,38 +107,6 @@ export default function ContactPage() {
                     {loc.phone}
                   </a>
                 </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Social links */}
-        <section
-          data-section
-          className="border-t border-charcoal-light py-20 px-6 md:px-12"
-        >
-          <div className="mx-auto max-w-2xl text-center">
-            <p data-animate className="mb-4 text-sm tracking-[0.3em] uppercase text-amber">
-              Follow Us
-            </p>
-            <h2 data-animate className="font-serif text-3xl font-bold text-cream md:text-4xl">
-              Stay Connected
-            </h2>
-            <div
-              data-animate
-              className="mx-auto mt-4 h-px w-16 bg-amber/40"
-            />
-            <div data-animate className="mt-10 flex flex-wrap items-center justify-center gap-6">
-              {socials.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-sm border border-charcoal-light px-6 py-3 text-xs tracking-[0.15em] uppercase text-warm-gray transition-all hover:border-amber/40 hover:text-amber"
-                >
-                  {social.name}
-                </a>
               ))}
             </div>
           </div>
