@@ -93,9 +93,9 @@ export default function Navbar() {
           <Image
             src="/images/logo.png"
             alt="Malt Barrel & Fire"
-            width={110}
-            height={46}
-            className="h-10 w-auto md:h-12"
+            width={160}
+            height={67}
+            className="h-12 w-auto md:h-14"
             priority
           />
         </Link>
