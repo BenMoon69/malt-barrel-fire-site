@@ -6,17 +6,10 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { locations } from "@/content/locations";
+import { partners } from "@/content/partners";
 import EmberParticles from "@/components/EmberParticles";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const partnerLogos = [
-  { name: "Partner 1", src: "/images/partners/partner-1.png" },
-  { name: "Partner 2", src: "/images/partners/partner-2.png" },
-  { name: "Partner 3", src: "/images/partners/partner-3.png" },
-  { name: "Partner 4", src: "/images/partners/partner-4.png" },
-  { name: "Partner 5", src: "/images/partners/partner-5.png" },
-];
 
 function useMouseParallax(ref: React.RefObject<HTMLDivElement | null>, intensity: number = 0.02) {
   useEffect(() => {
@@ -390,8 +383,10 @@ export default function Home() {
             data-animate
             className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-warm-gray md:text-xl"
           >
-            Wood-fired cuisine, rare whiskeys, and handcrafted cocktails — served in an atmosphere
-            forged in flame. Four locations across Gauteng, each with its own character.
+            Malt Barrel &amp; Fire is a gastropub that prides itself in delicious cuisine, warm
+            welcoming service and a lively atmosphere. From handcrafted cocktails and rare spirits to
+            live sports, outdoor seating, and unforgettable nights — four locations across Gauteng,
+            each with its own character.
           </p>
         </div>
       </section>
@@ -491,26 +486,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ──────────── PARTNERS ──────────── */}
+      {/* ──────────── PROUD PARTNERS ──────────── */}
       <section data-section className="relative py-24 px-6 md:px-12 border-t border-b border-charcoal-light">
         <div className="mx-auto max-w-6xl">
           <p
             data-animate
-            className="mb-12 text-center text-xs tracking-[0.4em] uppercase text-warm-gray/50"
+            className="mb-4 text-center text-xs tracking-[0.4em] uppercase text-amber"
           >
-            Our Partners
+            Proud Partners
+          </p>
+          <p
+            data-animate
+            className="mb-14 text-center text-sm text-warm-gray/60"
+          >
+            Crafted with the finest brands
           </p>
           <div
             data-animate
             data-from="scale"
-            className="flex flex-wrap items-center justify-center gap-14 opacity-40"
+            className="grid grid-cols-4 gap-8 sm:grid-cols-4 md:grid-cols-8"
           >
-            {partnerLogos.map((partner) => (
+            {partners.map((partner) => (
               <div
-                key={partner.name}
-                className="flex h-12 w-28 items-center justify-center text-warm-gray"
+                key={partner.slug}
+                className="group flex flex-col items-center justify-center gap-3 py-4 transition-all duration-300 hover:opacity-100 opacity-50 hover:scale-105"
               >
-                <span className="text-xs tracking-wider uppercase">{partner.name}</span>
+                {/* Logo placeholder — drop official logos into /public/images/partners/ */}
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-charcoal-light bg-charcoal/30 transition-all duration-300 group-hover:border-amber/40 group-hover:bg-charcoal/50">
+                  <span className="text-[10px] font-bold uppercase text-warm-gray/80 group-hover:text-amber transition-colors">
+                    {partner.name.slice(0, 2)}
+                  </span>
+                </div>
+                <span className="text-[10px] tracking-wider uppercase text-warm-gray/60 text-center leading-tight group-hover:text-warm-gray transition-colors">
+                  {partner.name}
+                </span>
               </div>
             ))}
           </div>

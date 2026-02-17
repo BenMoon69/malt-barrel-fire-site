@@ -2,49 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { locations } from "@/content/locations";
+import { locationEvents } from "@/content/events";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const events = [
-  {
-    title: "Women's Wednesday",
-    date: "Every Wednesday",
-    time: "From 5PM",
-    description:
-      "Live DJs, signature cocktails, and an electric atmosphere. The midweek experience you deserve.",
-    location: "All Branches",
-    image: "/images/hero-interior.jpg",
-  },
-  {
-    title: "Corona Sunset Session",
-    date: "Every Friday",
-    time: "4PM – 7PM",
-    description:
-      "Live DJ sets, R30 Coronas, and golden hour vibes. The perfect start to your weekend.",
-    location: "Midrand & Monte Casino",
-    image: "/images/drinks/spirits-bar.jpg",
-  },
-  {
-    title: "Whiskey Tasting Evening",
-    date: "Last Saturday of each month",
-    time: "6PM – 9PM",
-    description:
-      "Guided tasting of rare and premium whiskeys from around the world. Limited seats.",
-    location: "Monte Casino",
-    image: "/images/bar-interior.jpg",
-  },
-  {
-    title: "Live Music Saturdays",
-    date: "Every Saturday",
-    time: "7PM – Late",
-    description:
-      "Local artists, craft cocktails, and fire-grilled plates. A Saturday night like no other.",
-    location: "All Branches",
-    image: "/images/venue-exterior.jpg",
-  },
-];
 
 export default function EventsPage() {
   const headerRef = useRef<HTMLDivElement>(null);
@@ -81,7 +45,7 @@ export default function EventsPage() {
             opacity: 1,
             duration: 0.6,
             ease: "power2.out",
-            delay: i * 0.08,
+            delay: i * 0.1,
           });
         },
       });
@@ -119,66 +83,101 @@ export default function EventsPage() {
             data-animate
             className="mt-4 h-px w-20 bg-gradient-to-r from-transparent via-amber/50 to-transparent"
           />
+          <p data-animate className="mt-4 text-warm-gray/70">
+            Each location has its own unique events and specials
+          </p>
         </div>
       </div>
 
-      {/* Events grid */}
+      {/* Location events hub */}
       <div ref={gridRef} className="mx-auto max-w-6xl px-6 py-20 md:px-12">
         <div className="grid gap-8 md:grid-cols-2">
-          {events.map((event) => (
-            <div
-              key={event.title}
-              data-card
-              className="group overflow-hidden rounded-sm border border-charcoal-light transition-all duration-300 hover:border-amber/30"
-            >
-              {/* Image */}
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-                <div className="absolute bottom-4 left-5 right-5">
-                  <span className="inline-block rounded-sm bg-amber/90 px-3 py-1 text-[10px] tracking-[0.15em] uppercase text-background">
-                    {event.location}
-                  </span>
-                </div>
-              </div>
+          {locations.map((loc) => {
+            const locEvents = locationEvents.find((le) => le.slug === loc.slug);
+            const eventCount = locEvents?.events.length || 0;
+            const previewEvent = locEvents?.events[0];
 
-              {/* Content */}
-              <div className="p-6 md:p-8">
-                <h3 className="font-serif text-2xl text-cream">{event.title}</h3>
-                <div className="mt-2 flex items-center gap-3 text-xs text-amber">
-                  <span>{event.date}</span>
-                  <span className="h-1 w-1 rounded-full bg-amber/50" />
-                  <span>{event.time}</span>
+            return (
+              <Link
+                key={loc.slug}
+                href={`/events/${loc.slug}`}
+                data-card
+                className="group overflow-hidden rounded-sm border border-charcoal-light transition-all duration-300 hover:border-amber/30"
+              >
+                {/* Image */}
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <Image
+                    src={previewEvent?.image || "/images/bar-interior.jpg"}
+                    alt={`Events at ${loc.name}`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                  <div className="absolute bottom-4 left-5 right-5">
+                    <span className="inline-block rounded-sm bg-amber/90 px-3 py-1 text-[10px] tracking-[0.15em] uppercase text-background">
+                      {eventCount} {eventCount === 1 ? "event" : "events"}
+                    </span>
+                  </div>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-warm-gray">
-                  {event.description}
-                </p>
 
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <a
-                    href="#"
-                    className="rounded-sm border border-amber bg-amber px-6 py-2.5 text-xs tracking-[0.15em] uppercase text-background transition-all hover:bg-amber-light"
-                  >
-                    Buy Tickets
-                  </a>
-                  <a
-                    href="#"
-                    className="rounded-sm border border-cream/20 px-6 py-2.5 text-xs tracking-[0.15em] uppercase text-cream transition-all hover:border-cream/50"
-                  >
-                    Book Table
-                  </a>
+                {/* Content */}
+                <div className="p-6 md:p-8">
+                  <h3 className="font-serif text-2xl text-cream transition-colors group-hover:text-amber">
+                    {loc.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-warm-gray/60">{loc.tagline}</p>
+
+                  {previewEvent && (
+                    <div className="mt-4 rounded-sm border border-charcoal-light/50 bg-charcoal/20 p-4">
+                      <p className="text-xs tracking-[0.1em] uppercase text-amber/70">
+                        Coming up
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-cream">
+                        {previewEvent.title}
+                      </p>
+                      <p className="mt-0.5 text-xs text-warm-gray/60">
+                        {previewEvent.date} &bull; {previewEvent.time}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mt-5 flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-amber opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+                    View All Events
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
+
+      {/* Event Enquiry CTA */}
+      <section className="border-t border-charcoal-light bg-charcoal/20 py-20 px-6 md:px-12">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="mb-3 text-xs tracking-[0.3em] uppercase text-amber">
+            Private Events &amp; Functions
+          </p>
+          <h2 className="font-serif text-3xl font-bold text-cream md:text-4xl">
+            Host Your Event With Us
+          </h2>
+          <p className="mx-auto mt-4 max-w-lg text-warm-gray">
+            Looking to host a private event, corporate function, or celebration? Get in touch
+            with your preferred location and let us tailor the perfect experience.
+          </p>
+          <div className="mt-10">
+            <a
+              href="mailto:info@maltbarrelandfire.com?subject=Event Enquiry"
+              className="rounded-sm border border-amber bg-amber px-10 py-4 text-sm tracking-[0.25em] uppercase text-background transition-all duration-300 hover:bg-amber-light hover:shadow-[0_0_40px_rgba(212,145,26,0.2)]"
+            >
+              Submit Enquiry
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
