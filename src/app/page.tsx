@@ -252,7 +252,7 @@ export default function Home() {
       {/* ──────────── HERO ──────────── */}
       <section
         ref={heroRef}
-        className="relative flex min-h-screen items-center justify-center overflow-hidden pb-20"
+        className="relative flex min-h-screen items-center justify-center overflow-hidden pb-48"
       >
         <Image
           src="/images/hero-interior.jpg"
