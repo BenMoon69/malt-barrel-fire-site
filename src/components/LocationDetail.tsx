@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -76,29 +77,41 @@ export default function LocationDetail({ location }: LocationDetailProps) {
         ref={heroRef}
         className="relative flex min-h-[70vh] items-center justify-center overflow-hidden"
       >
-        {/* Hero image placeholder — swap with real photo when available */}
+        {/* Hero image — shows real photo or placeholder */}
         <div className="absolute inset-0 bg-charcoal" />
-        {/* Ready for: <Image src={location.heroImage} alt={location.name} fill className="object-cover" priority /> */}
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <div className="text-center text-warm-gray/20">
-            <svg
-              className="mx-auto mb-3 h-16 w-16"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={0.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V4.5a1.5 1.5 0 00-1.5-1.5H3.75a1.5 1.5 0 00-1.5 1.5v15a1.5 1.5 0 001.5 1.5z"
-              />
-            </svg>
-            <p className="text-xs tracking-wider uppercase">Hero photo coming soon</p>
+        {location.heroImage ? (
+          <>
+            <Image
+              src={location.heroImage}
+              alt={`${location.name} interior`}
+              fill
+              className="object-cover"
+              priority
+              quality={85}
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+          </>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-warm-gray/20">
+              <svg
+                className="mx-auto mb-3 h-16 w-16"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={0.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V4.5a1.5 1.5 0 00-1.5-1.5H3.75a1.5 1.5 0 00-1.5 1.5v15a1.5 1.5 0 001.5 1.5z"
+                />
+              </svg>
+              <p className="text-xs tracking-wider uppercase">Photo coming soon</p>
+            </div>
           </div>
-        </div>
+        )}
         <div
           className="absolute inset-0"
           style={{
