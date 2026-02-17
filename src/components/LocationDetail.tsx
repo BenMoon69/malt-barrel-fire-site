@@ -75,7 +75,7 @@ export default function LocationDetail({ location }: LocationDetailProps) {
       {/* ──────────── HERO ──────────── */}
       <section
         ref={heroRef}
-        className="relative flex min-h-[70vh] items-center justify-center overflow-hidden"
+        className="relative flex min-h-[60vh] items-center justify-center overflow-hidden lg:min-h-[55vh]"
       >
         {/* Hero image — shows real photo or placeholder */}
         <div className="absolute inset-0 bg-charcoal" />
@@ -90,7 +90,14 @@ export default function LocationDetail({ location }: LocationDetailProps) {
               quality={85}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-black/40" />
+            {/* Multi-layer overlay for readable text */}
+            <div className="absolute inset-0 bg-black/55" />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.4) 100%)",
+              }}
+            />
           </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -116,11 +123,11 @@ export default function LocationDetail({ location }: LocationDetailProps) {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 80% 60% at 50% 80%, rgba(212, 145, 26, 0.08) 0%, transparent 70%)",
+              "radial-gradient(ellipse 80% 60% at 50% 80%, rgba(212, 145, 26, 0.06) 0%, transparent 70%)",
           }}
         />
         <div
-          className="absolute bottom-0 left-0 right-0 h-40"
+          className="absolute bottom-0 left-0 right-0 h-32"
           style={{
             background: "linear-gradient(to top, var(--background) 0%, transparent 100%)",
           }}
@@ -129,23 +136,26 @@ export default function LocationDetail({ location }: LocationDetailProps) {
         <div className="relative z-10 px-6 text-center max-w-4xl mx-auto">
           <p
             data-hero-animate
-            className="mb-4 text-sm tracking-[0.4em] uppercase text-amber/80"
+            className="mb-3 text-xs tracking-[0.4em] uppercase text-amber/90 md:text-sm"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
           >
             Malt Barrel &amp; Fire
           </p>
           <h1
             data-hero-animate
-            className="font-serif text-5xl font-bold text-cream md:text-7xl lg:text-8xl"
+            className="font-serif text-4xl font-bold text-cream md:text-6xl lg:text-7xl"
+            style={{ textShadow: "0 2px 24px rgba(0,0,0,0.7)" }}
           >
             {location.name}
           </h1>
           <div
             data-hero-animate
-            className="mx-auto my-6 h-px w-24 bg-gradient-to-r from-transparent via-amber/50 to-transparent"
+            className="mx-auto my-5 h-px w-24 bg-gradient-to-r from-transparent via-amber/50 to-transparent"
           />
           <p
             data-hero-animate
-            className="text-lg tracking-wide text-warm-gray/80 md:text-xl"
+            className="text-base tracking-wide text-cream/70 md:text-lg"
+            style={{ textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}
           >
             {location.tagline}
           </p>

@@ -252,7 +252,7 @@ export default function Home() {
       {/* ──────────── HERO ──────────── */}
       <section
         ref={heroRef}
-        className="relative flex min-h-screen items-center justify-center overflow-hidden"
+        className="relative flex min-h-[85vh] items-center justify-center overflow-hidden lg:min-h-[80vh]"
       >
         <Image
           src="/images/hero-interior.jpg"
@@ -262,19 +262,19 @@ export default function Home() {
           priority
           quality={90}
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/65" />
         {/* Vignette */}
         <div className="absolute inset-0 vignette" />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 70% 55% at 50% 85%, rgba(212, 145, 26, 0.15) 0%, transparent 70%)",
+              "radial-gradient(ellipse 70% 55% at 50% 85%, rgba(212, 145, 26, 0.12) 0%, transparent 70%)",
             animation: "fireGlow 4s ease-in-out infinite",
           }}
         />
         <div
-          className="absolute bottom-0 left-0 right-0 h-56"
+          className="absolute bottom-0 left-0 right-0 h-40"
           style={{
             background: "linear-gradient(to top, var(--background) 0%, transparent 100%)",
           }}
@@ -285,13 +285,14 @@ export default function Home() {
         <div ref={heroTextRef} className="relative z-10 px-6 text-center max-w-5xl mx-auto">
           <p
             data-hero-animate
-            className="mb-6 text-sm tracking-[0.5em] uppercase text-amber/80 md:text-base"
+            className="mb-5 text-xs tracking-[0.5em] uppercase text-amber/90 md:text-sm"
           >
             Wood-Fired Cuisine &bull; Rare Spirits &bull; Live Flame
           </p>
           <h1
             data-hero-animate
-            className="font-serif text-6xl font-bold leading-[1.0] tracking-tight text-cream md:text-8xl lg:text-9xl drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]"
+            className="font-serif text-5xl font-bold leading-[1.05] tracking-tight text-cream md:text-7xl lg:text-8xl"
+            style={{ textShadow: "0 2px 30px rgba(0,0,0,0.7)" }}
           >
             Malt Barrel
             <br />
@@ -299,23 +300,24 @@ export default function Home() {
           </h1>
           <div
             data-hero-animate
-            className="mx-auto my-8 h-px w-32 bg-gradient-to-r from-transparent via-amber/60 to-transparent"
+            className="mx-auto my-6 h-px w-28 bg-gradient-to-r from-transparent via-amber/60 to-transparent"
           />
           <p
             data-hero-animate
-            className="text-xl tracking-[0.4em] uppercase text-warm-gray md:text-2xl"
+            className="text-lg tracking-[0.4em] uppercase text-cream/70 md:text-xl"
+            style={{ textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}
           >
             Smoke. Spirit. Flame.
           </p>
           <p
             data-hero-animate
-            className="mx-auto mt-4 max-w-lg text-base text-warm-gray/70 leading-relaxed"
+            className="mx-auto mt-3 max-w-lg text-sm text-cream/50 leading-relaxed md:text-base"
           >
             An atmosphere forged in flame — four locations across Gauteng
           </p>
           <div
             data-hero-animate
-            className="mt-14 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+            className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
           >
             <Link
               href="/menu"
