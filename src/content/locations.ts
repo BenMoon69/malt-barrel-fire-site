@@ -46,8 +46,8 @@ export const locations: Location[] = [
       sunday: "TBC",
     },
     mapQuery: "Malt+Barrel+and+Fire+Midrand",
-    instagram: "https://instagram.com/maltbarrelandfire_midrand",
-    instagramHandle: "@maltbarrelandfire_midrand",
+    instagram: "https://instagram.com/malt_midrand",
+    instagramHandle: "@malt_midrand",
     heroImage: "/images/locations/midrand-hero.jpg",
     menus: {
       main: true,
@@ -74,8 +74,8 @@ export const locations: Location[] = [
       sunday: "TBC",
     },
     mapQuery: "Malt+Barrel+and+Fire+Silver+Lakes",
-    instagram: "https://instagram.com/maltbarrelandfire_silverlakes",
-    instagramHandle: "@maltbarrelandfire_silverlakes",
+    instagram: "https://instagram.com/malt_silverlakes",
+    instagramHandle: "@malt_silverlakes",
     heroImage: "/images/locations/silver-lakes-hero.jpg",
     menus: {
       main: true,
@@ -102,8 +102,8 @@ export const locations: Location[] = [
       sunday: "TBC",
     },
     mapQuery: "Malt+Barrel+and+Fire+Queenswood",
-    instagram: "https://instagram.com/maltbarrelandfire_queenswood",
-    instagramHandle: "@maltbarrelandfire_queenswood",
+    instagram: "https://instagram.com/malt_queenswood",
+    instagramHandle: "@malt_queenswood",
     heroImage: "/images/locations/queenswood-hero.jpg",
     menus: {
       main: true,
@@ -130,8 +130,8 @@ export const locations: Location[] = [
       sunday: "TBC",
     },
     mapQuery: "Malt+Barrel+and+Fire+Montecasino",
-    instagram: "https://instagram.com/maltbarrelandfire_montecasino",
-    instagramHandle: "@maltbarrelandfire_montecasino",
+    instagram: "https://instagram.com/malt_montecasino",
+    instagramHandle: "@malt_montecasino",
     heroImage: "/images/locations/monte-casino-hero.jpg",
     menus: {
       main: true,
