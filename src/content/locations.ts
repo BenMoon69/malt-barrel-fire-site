@@ -34,7 +34,7 @@ export const locations: Location[] = [
     tagline: "Where the flame was born",
     phone: "011 594 7947",
     email: "info@maltmidrand.co.za",
-    address: "Waterfall Walk Retail Centre, Midrand, Gauteng",
+    address: "Shop 8 Waterfall Walk, Ridge Road, Midrand, 1682",
     hours: "Trading hours coming soon",
     tradingHours: {
       monday: "TBC",
